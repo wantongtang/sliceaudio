@@ -3,4 +3,4 @@
 # usage
 - git clone git@github.com:wantongtang/sliceaudio.git
 - python SliceAudio.py -i ./a.wav
-where a.wav is the wav to be sliced
+- where a.wav is the wav to be sliced
