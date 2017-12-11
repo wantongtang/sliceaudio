@@ -12,9 +12,13 @@ PARSER = argparse.ArgumentParser(description = """
 								"""								
 								)
 PAESER.add_argument('-i',
-					"in_dir",
+					"--in_dir",
 					help = "input directory",
 					type = "str",
 					default = "./")
-PARSER.add_argument("")
+PARSER.add_argument("-o",
+					"output_dir",
+					type = str,
+					default = "./",
+					help="output dir of sliced audio")
 
