@@ -75,7 +75,8 @@ PARSER.add_argument('-w', '--window_slide_ms', help=
 					"""
 					Move the slice window along this many milliseconds to start the next slice (a 'sliding window'). '2000' (default, 2 seconds).
 					""", default = 1000, required=False)
-
+PARSER.add_argument('-d',
+					)
 
 ARGS = PARSER.parse_args()
 
