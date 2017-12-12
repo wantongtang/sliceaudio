@@ -85,7 +85,8 @@ PARSER.add_argument('-d',
 					""")
 PARSER.add_argument('-I',
 					"--input_dir",
-					default = False,
+					type=str
+					default = "",
 					help = "input dir for multi files")
 ARGS = PARSER.parse_args()
 
@@ -131,14 +132,14 @@ def slice_audio(file, channels, outformat, width, rate, slice_length, slide):
 			sound_slice = sound[slice_start:length_sound_ms]
 			backwards = sound_slice.reverse()
 			notes_reversed += backwards
-			sound_slice.export(fileName.split('/')[-1]+'.slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((length_sound_ms)/1000)+'Secs.'+outformat, format=outformat)
-			backwards.export(fileName.split('/')[-1]+'backwards_slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
+			sound_slice.export(ARGS.output_dir+fileName.split('/')[-1]+'.slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((length_sound_ms)/1000)+'Secs.'+outformat, format=outformat)
+			backwards.export(ARGS.output_dir+fileName.split('/')[-1]+'backwards_slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
 		#Save the sewn together backwards bits to file
-		notes_reversed.export(fileName.split('/')[-1]+'notes_reversed_granular.'+outformat, format=outformat)
+		notes_reversed.export(ARGS.output_dir+fileName.split('/')[-1]+'notes_reversed_granular.'+outformat, format=outformat)
 
 
 def main():
-
+	
 	if ARGS.input_dir:
 		for file in os.listdir(ARGS.input_dir):
 			print(ARGS.input_dir+file)
