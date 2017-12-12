@@ -120,8 +120,8 @@ def slice_audio(file, channels, outformat, width, rate, slice_length, slide):
 			sound_slice = sound[slice_start:slice_start+length_slice_ms]
 			backwards = sound_slice.reverse()
 			notes_reversed += backwards
-			sound_slice.export(fileName+'.slice'+str(slice_start/1000)+'SecsTo'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
-			backwards.export(fileName+'backwards_slice'+str(slice_start/1000)+'SecsTo'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
+			sound_slice.export(ARGS.output_dir+fileName.split('/')[-1]+'.slice'+str(slice_start/1000)+'SecsTo'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
+			backwards.export(ARGS.output_dir+fileName.split('/')[-1]+'backwards_slice'+str(slice_start/1000)+'SecsTo'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
 			slice_start += int(slide)
 		#When the slice is abutting the end of the file, output that slice too.'
 		if slice_start + length_slice_ms >= length_sound_ms:
@@ -144,5 +144,3 @@ def main():
 	else:
 		slice_audio(ARGS.infiles, ARGS.channels, ARGS.out_format, ARGS.sample_width, ARGS.sample_rate, ARGS.sample_slice_length_ms, ARGS.window_slide_ms)
 main()
-#Execute the slice_audio function.
-#slice_audio(ARGS.infiles, ARGS.channels, ARGS.out_format, ARGS.sample_width, ARGS.sample_rate, ARGS.sample_slice_length_ms, ARGS.window_slide_ms)
