@@ -19,11 +19,9 @@ Can input/output in any format that ffmpeg supports.
 
 # To do:
 
-~~add support to set output destination folder~~
+1. ~~add support to set output destination folder~~
+2. add support to only output glued reversed chunks (i.e., turn off full output)
+3. allow naming of glued reverse-granule file
 
-	add support to only output glued reversed chunks (i.e., turn off full output)
-
-	allow naming of glued reverse-granule file
-
-
-based https://github.com/schultzm/SliceAudio
+# reference
+https://github.com/schultzm/SliceAudio
