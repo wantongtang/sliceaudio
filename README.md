@@ -20,7 +20,9 @@ python SliceAudio.py -h
 
 To do:
 ~~    add support to set output destination folder ~~
+
 	add support to only output glued reversed chunks (i.e., turn off full output)
+
 	allow naming of glued reverse-granule file
 
 
