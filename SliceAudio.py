@@ -85,7 +85,6 @@ PARSER.add_argument('-d',
 					""")
 PARSER.add_argument('-I',
 					"--input_dir",
-					type=str
 					default = "",
 					help = "input dir for multi files")
 ARGS = PARSER.parse_args()
