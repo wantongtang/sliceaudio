@@ -1,4 +1,4 @@
-# audioslice auto slice audio into 1000ms 
+# slice big audio to small part
 
 # example usage:
 ```python
