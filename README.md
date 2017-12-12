@@ -1,4 +1,4 @@
-# slice big audio to small part
+# Slice big audio to small part
 
 ## example usage:
 ```python
