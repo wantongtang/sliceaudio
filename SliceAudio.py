@@ -50,7 +50,7 @@ PARSER.add_argument('-i', '--infiles', help=
 					"""
 					Name of input files. Can use e.g., '*.mp3' to bring up all mp3 files in a path.
 					"""
-					, nargs='+', required=True)
+					, nargs='+', required=False)
 PARSER.add_argument('-c', '--channels', help=
 					"""
 					Number of output channels per file. '1', mono (default); '2', stereo.
@@ -75,18 +75,28 @@ PARSER.add_argument('-w', '--window_slide_ms', help=
 					"""
 					Move the slice window along this many milliseconds to start the next slice (a 'sliding window'). '2000' (default, 2 seconds).
 					""", default = 1000, required=False)
-PARSER.add_argument('-d',
-					)
 
+PARSER.add_argument('-d',
+					'--output_dir',
+					type = str,
+					default = "./",
+					help = """
+					Out put dir
+					""")
+PARSER.add_argument('-I',
+					"--input_dir",
+					default = False,
+					help = "input dir for multi files")
 ARGS = PARSER.parse_args()
 
 #Function to slice up the audio.
-def slice_audio(files, channels, outformat, width, rate, slice_length, slide):
+def slice_audio(file, channels, outformat, width, rate, slice_length, slide):
 	outformat = outformat.replace('.','').lower()
 	#Allow the user to see their x-bit selection with this dictionary.
 	width_translator = {1:'8-bit', 2:'16-bit', 4:'32-bit'}
 	#For every file in the input list do processing.
-	for file in files:
+#	for file in files:
+	if True:
 		fileName, fileExtension = os.path.splitext(file)
 		#Print to screen the processing parameters.
 		with audioread.audio_open(file) as f:
@@ -121,11 +131,21 @@ def slice_audio(files, channels, outformat, width, rate, slice_length, slide):
 			sound_slice = sound[slice_start:length_sound_ms]
 			backwards = sound_slice.reverse()
 			notes_reversed += backwards
-			sound_slice.export(fileName+'.slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((length_sound_ms)/1000)+'Secs.'+outformat, format=outformat)
-			backwards.export(fileName+'backwards_slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
+			sound_slice.export(fileName.split('/')[-1]+'.slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((length_sound_ms)/1000)+'Secs.'+outformat, format=outformat)
+			backwards.export(fileName.split('/')[-1]+'backwards_slice'+str(slice_start/1000)+'SecsToEndFileAt'+str((slice_start+length_slice_ms)/1000)+'Secs.'+outformat, format=outformat)
 		#Save the sewn together backwards bits to file
-		notes_reversed.export(fileName+'notes_reversed_granular.'+outformat, format=outformat)
+		notes_reversed.export(fileName.split('/')[-1]+'notes_reversed_granular.'+outformat, format=outformat)
 
+
+def main():
+
+	if ARGS.input_dir:
+		for file in os.listdir(ARGS.input_dir):
+			print(ARGS.input_dir+file)
+			slice_audio(ARGS.input_dir+file, ARGS.channels, ARGS.out_format, ARGS.sample_width, ARGS.sample_rate, ARGS.sample_slice_length_ms, ARGS.window_slide_ms)
+
+	else:
+		slice_audio(ARGS.infiles, ARGS.channels, ARGS.out_format, ARGS.sample_width, ARGS.sample_rate, ARGS.sample_slice_length_ms, ARGS.window_slide_ms)
+main()
 #Execute the slice_audio function.
-slice_audio(ARGS.infiles, ARGS.channels, ARGS.out_format, ARGS.sample_width, ARGS.sample_rate, ARGS.sample_slice_length_ms, ARGS.window_slide_ms)
-print 'Processing completed.  Have fun with your one-shots and your reversed-granule file!\n'
+#slice_audio(ARGS.infiles, ARGS.channels, ARGS.out_format, ARGS.sample_width, ARGS.sample_rate, ARGS.sample_slice_length_ms, ARGS.window_slide_ms)
