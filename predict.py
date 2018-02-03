@@ -44,6 +44,7 @@ from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
 
 import csv
 
+
 SUBMIT=True
 FLAGS = None
 
@@ -111,6 +112,71 @@ def run_graph(wavdir, labels, input_layer_name, output_layer_name,
 
     return 0
 
+def run_graph1(wavfilename, labels, input_layer_name, output_layer_name,
+              num_top_predictions):
+  """Runs the audio data through the graph and prints predictions."""
+  with tf.Session() as sess:
+    # Feed the audio data as input to the graph.
+    #   predictions  will contain a two-dimensional array, where one
+    #   dimension represents the input image count, and the other has
+    #   predictions per class
+    softmax_tensor = sess.graph.get_tensor_by_name(output_layer_name)
+    if SUBMIT:
+      if 1:
+        if 1:
+          with open(wavfilename, 'rb') as wav_file:
+            wav_data = wav_file.read()
+            predictions, = sess.run(softmax_tensor, {input_layer_name: wav_data})
+
+    # Sort to show labels in order of confidence
+            top_k = predictions.argsort()[-num_top_predictions:][::-1]
+            for node_id in top_k:
+              human_string = labels[node_id]
+              score = predictions[node_id]
+              writer.writerow([alldir,human_string])
+              print('%s %s' % (alldir,human_string))
+    else:
+      with open("nosubmit.csv","w") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["fname","label","score"])
+        for alldir in os.listdir(wavdir):
+          with open(os.path.join('%s%s' %(wavdir,alldir)), 'rb') as wav_file:
+            wav_data = wav_file.read()
+            predictions, = sess.run(softmax_tensor, {input_layer_name: wav_data})
+
+    # Sort to show labels in order of confidence
+            top_k = predictions.argsort()[-num_top_predictions:][::-1]
+            for node_id in top_k:
+              human_string = labels[node_id]
+              score = predictions[node_id]
+              writer.writerow([alldir,human_string,score])
+              print('%s %s %f' % (alldir,human_string,score))
+              if score >0.5:
+                os.system("cp -rf %s /tmp/speech_dataset/%s/%s"%(os.path.join('%s%s' %(wavdir,alldir)),human_string,alldir))
+                print("coppied,score = %f"%score)
+
+      
+
+
+    return 0
+
+def label_wav1(wavfilename, labels, graph, input_name, output_name, how_many_labels):
+  """Loads the model and labels, and runs the inference to print predictions."""
+#	if not wav or not tf.gfile.Exists(wav):
+#    tf.logging.fatal('Audio file does not exist %s', wav)
+
+  if not labels or not tf.gfile.Exists(labels):
+    tf.logging.fatal('Labels file does not exist %s', labels)
+
+  if not graph or not tf.gfile.Exists(graph):
+    tf.logging.fatal('Graph file does not exist %s', graph)
+
+  labels_list = load_labels(labels)
+
+  # load graph, which is stored in the default session
+  load_graph(graph)
+
+  run_graph1(wavfilename, labels_list, input_name, output_name, how_many_labels)
 
 def label_wav(wavdir, labels, graph, input_name, output_name, how_many_labels):
   """Loads the model and labels, and runs the inference to print predictions."""
@@ -142,7 +208,7 @@ def main(_):
 	 
 #	label_wav("/tmp/speech_dataset/left/a5d485dc_nohash_0.wav","/tmp/speech_commands_train/conv_labels.txt","/tmp/my_frozen_graph.pb","wav_data:0","labels_softmax:0",3)	
 
-main(0)
+#main(0)
 """
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
